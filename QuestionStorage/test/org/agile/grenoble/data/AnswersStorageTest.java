@@ -8,6 +8,9 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doReturn;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -93,6 +96,13 @@ public class AnswersStorageTest {
 		} catch (SQLException e) {
 			assertFailureAndPrintStackTrace(e);
 		}
+	}
+	
+	@Test
+	public void computeScore() throws SQLException {
+		int userId = 1;
+		doReturn(1).when(answersStorage).getScorePerQuestionNumber(anyInt(), anyInt());
+		assertThat(answersStorage.computeScore(userId), equalTo(7));		
 	}
 	
 	private void assertFailureAndPrintStackTrace(SQLException e) {

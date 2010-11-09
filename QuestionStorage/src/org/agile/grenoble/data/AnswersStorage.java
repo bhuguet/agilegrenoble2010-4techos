@@ -30,6 +30,7 @@ public class AnswersStorage {
 			schemaVersion);
 	protected static final String SELECT_AN_ID_A_NAME_AN_EMAIL_FROM_NOKIATEST_SURVEYS = "Select anId, aName, anEmail from nokiatest.surveys where aName=''{0}'' ;";
 	protected static final String INSERT_INTO_NOKIATEST_SURVEYS_A_NAME_AN_EMAIL = "INSERT INTO nokiatest.surveys (aName,anEmail) VALUES (''{0}'',''{1}'');";
+	private static final String SELECT_SCORE_FROM_QUESTION = "Select anAnswers_0 from question_{0} where anId={1}";
 	
 	protected Connection getConnection() {
 		if (conn == null ) {
@@ -261,5 +262,34 @@ public class AnswersStorage {
 		System.out.println("We have update "+res + " rows");
 		return (res==1); 
 	}
-	
+
+	public Integer computeScore(int userId) {
+		Integer score = 0;
+		int nbQuestions = 7;
+		for (int i = 0; i < nbQuestions; i++) {
+			try {
+				score += getScorePerQuestionNumber(userId, i);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return score;		
+	}
+
+	public Integer getScorePerQuestionNumber(int userId, int questionId) throws SQLException {
+		String query = MessageFormat.format(SELECT_SCORE_FROM_QUESTION, questionId,userId);
+		Integer score = 0;
+		Connection conn = getConnection();
+		Statement stat = conn.createStatement();
+		ResultSet res = stat.executeQuery(query);
+		if (res.next()) {
+			score = res.getInt(1);
+		} else {
+			throw new SQLException("Score could not be retrieved");
+		}
+		res.close();
+		stat.close();
+		conn.close();
+		return score;
+	}	
 }
