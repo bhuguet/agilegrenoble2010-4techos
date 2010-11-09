@@ -3,11 +3,15 @@ package org.agile.grenoble.data;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doReturn;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -93,6 +97,14 @@ public class AnswersStorageTest {
 		} catch (SQLException e) {
 			assertFailureAndPrintStackTrace(e);
 		}
+	}
+	
+	@Test
+	public void computeScore() throws SQLException {
+		int userId = 1;
+		doReturn(1).when(answersStorage).runQueryForScore(anyInt(), anyString(), any(Connection.class));
+		
+		assertThat(answersStorage.computeScore(userId), equalTo(7));		
 	}
 	
 	private void assertFailureAndPrintStackTrace(SQLException e) {

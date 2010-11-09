@@ -261,5 +261,44 @@ public class AnswersStorage {
 		System.out.println("We have update "+res + " rows");
 		return (res==1); 
 	}
+
+	public Integer computeScore(int userId) {
+		int score = 0;
+		for (int i = 0; i < 7; i++) {
+			try {
+				score += getScorePerQuestionNumber(userId, i);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return score;		
+	}
+
+	public Integer getScorePerQuestionNumber(int userId, int questionId) throws SQLException {
+		Integer score = 0;
+		String query = "select * from question_" + questionId + " where anId=" + userId + ";";
+		Connection conn = getConnection();
+		if (conn != null) { 
+			score = runQueryForScore(score, query, conn);
+			conn.close();
+		}
+		return score;
+	}
+
+	protected Integer runQueryForScore(Integer score, String query, Connection conn)
+			throws SQLException {
+		Statement stat = conn.createStatement();
+		ResultSet res = stat.executeQuery(query);
+		if (res.next()) {
+			score = res.getInt(1);
+		} else {
+			throw new SQLException("RTFM");
+		}
+		res.close();
+		stat.close();
+		return score;
+	}
 	
 }
