@@ -277,10 +277,10 @@ public class AnswersStorage {
 	}
 
 	public Integer getScorePerQuestionNumber(int userId, int questionId) throws SQLException {
-		String query = MessageFormat.format(SELECT_SCORE_FROM_QUESTION, questionId,userId);
 		Integer score = 0;
 		Connection conn = getConnection();
 		Statement stat = conn.createStatement();
+		String query = MessageFormat.format(SELECT_SCORE_FROM_QUESTION, questionId,userId);
 		ResultSet res = stat.executeQuery(query);
 		if (res.next()) {
 			score = res.getInt(1);

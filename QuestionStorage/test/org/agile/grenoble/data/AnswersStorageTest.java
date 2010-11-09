@@ -99,7 +99,7 @@ public class AnswersStorageTest {
 	}
 	
 	@Test
-	public void computeScore() throws SQLException {
+	public void computeScore() throws SQLException{
 		int userId = 1;
 		doReturn(1).when(answersStorage).getScorePerQuestionNumber(anyInt(), anyInt());
 		assertThat(answersStorage.computeScore(userId), equalTo(7));		
